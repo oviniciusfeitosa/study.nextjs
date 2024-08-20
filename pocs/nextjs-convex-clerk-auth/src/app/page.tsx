@@ -1,117 +1,62 @@
-"use client";
+"use client"
+import { SignOutButton } from "@clerk/clerk-react";
+import { useMutation, useQuery } from "convex/react";
+import { FormEvent, useState } from "react";
+import { api } from "../../convex/_generated/api";
+import Badge from "./Badge";
+import LoginPage from "./LoginPage";
+import { useStoreUserEffect } from "./useStoreUserEffect";
 
-import { Button } from "@/components/ui/button";
-import {
-  Authenticated,
-  Unauthenticated,
-  useMutation,
-  useQuery,
-} from "convex/react";
-import { api } from "..//../convex/_generated/api";
-import { SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
-import { StickyHeader } from "@/components/layout/sticky-header";
-import { Skeleton } from "@/components/ui/skeleton";
-
-export default function Home() {
+export default function App() {
+  const { isLoading, isAuthenticated } = useStoreUserEffect();
   return (
-    <>
-      <StickyHeader className="px-4 py-2">
-        <div className="flex justify-between items-center">
-          Convex + Next.js + Clerk
-          <SignInAndSignUpButtons />
-        </div>
-      </StickyHeader>
-      <main className="container max-w-2xl flex flex-col gap-8">
-        <h1 className="text-4xl font-extrabold my-8 text-center">
-          Convex + Next.js + Clerk Auth
-        </h1>
-        <Authenticated>
-          <SignedInContent />
-        </Authenticated>
-        <Unauthenticated>
-          <p>Click one of the buttons in the top right corner to sign in.</p>
-        </Unauthenticated>
-      </main>
-    </>
+    <main>
+      {isLoading ? (
+        <>Loading...</>
+      ) : isAuthenticated ? (
+        <Content />
+      ) : (
+        <LoginPage />
+      )}
+    </main>
   );
 }
 
-function SignInAndSignUpButtons() {
-  return (
-    <div className="flex gap-4">
-      <Authenticated>
-        <UserButton afterSignOutUrl="#" />
-      </Authenticated>
-      <Unauthenticated>
-        <SignInButton mode="modal">
-          <Button variant="ghost">Sign in</Button>
-        </SignInButton>
-        <SignUpButton mode="modal">
-          <Button>Sign up</Button>
-        </SignUpButton>
-      </Unauthenticated>
-    </div>
-  );
-}
+function Content() {
+  const messages = useQuery(api.messages.list) || [];
 
-function SignedInContent() {
-  const { viewer, numbers } =
-    useQuery(api.myFunctions.listNumbers, {
-      count: 10,
-    }) ?? {};
-  const addNumber = useMutation(api.myFunctions.addNumber);
+  const [newMessageText, setNewMessageText] = useState("");
+  const sendMessage = useMutation(api.messages.send);
 
-  if (viewer === undefined || numbers === undefined) {
-    return (
-      <>
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-      </>
-    );
+  async function handleSendMessage(event: FormEvent) {
+    event.preventDefault();
+    await sendMessage({ body: newMessageText });
+    setNewMessageText("");
   }
-
   return (
-    <>
-      <p>Welcome {viewer ?? "N/A"}!</p>
-      <p>
-        Click the button below and open this page in another window - this data
-        is persisted in the Convex cloud database!
-      </p>
-      <p>
-        <Button
-          onClick={() => {
-            void addNumber({ value: Math.floor(Math.random() * 10) });
-          }}
-        >
-          Add a random number
-        </Button>
-      </p>
-      <p>
-        Numbers:{" "}
-        {numbers?.length === 0
-          ? "Click the button!"
-          : numbers?.join(", ") ?? "..."}
-          {JSON.stringify(numbers)}
-      </p>
-      <p>
-        Edit <pre>convex/myFunctions.ts</pre> to change your backend
-      </p>
-      <p>
-        Edit <pre>app/page.tsx</pre> to change your frontend
-      </p>
-      <p>
-        Check out{" "}
-        <a target="_blank" href="https://docs.convex.dev/home">
-          Convex docs
-        </a>
-      </p>
-      <p>
-        To build a full page layout copy one of the included{" "}
-        <a target="_blank" href="/layouts">
-          layouts
-        </a>
-      </p>
-    </>
+    <main>
+      <h1>Convex Chat</h1>
+      <Badge />
+      <h2>
+        <SignOutButton />
+      </h2>
+      <ul>
+        {messages.map((message) => (
+          <li key={message._id}>
+            <span>{message.author}:</span>
+            <span>{message.body}</span>
+            <span>{new Date(message._creationTime).toLocaleTimeString()}</span>
+          </li>
+        ))}
+      </ul>
+      <form onSubmit={handleSendMessage}>
+        <input
+          value={newMessageText}
+          onChange={(event) => setNewMessageText(event.target.value)}
+          placeholder="Write a message…"
+        />
+        <input type="submit" value="Send" disabled={newMessageText === ""} />
+      </form>
+    </main>
   );
 }

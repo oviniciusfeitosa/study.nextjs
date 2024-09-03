@@ -24,7 +24,10 @@ pnpm add -D prisma
 - Generate an Auth Secret: 
   - Run the following command to generate a secret for authentication: `npx auth secret`
   - Add the generated secret to your .env file: `NEXTAUTH_SECRET="your-auth-secret"`
-- Initialize Prisma: `npx prisma init --datasource-provider mongodb`
+- Prisma
+  - Initialize Prisma: `pnpm exec prisma init --datasource-provider mongodb`
+  - Push to the database: `pnpm exec prisma db push`
+  - Access database: `pnpm exec prisma studio`
 - Create the files bellow:
   - `@/lib/db.ts`
   - `@/lib/auth.config.ts`
@@ -129,3 +132,4 @@ bun dev
 - [Prisma - Quickstart](https://www.prisma.io/docs/getting-started/quickstart)
 - [Implementing Google Authentication in a NextJS 14 Application with AuthJS 5, MongoDB, and Prisma ORM](https://medium.com/@sazzadur/implementing-google-authentication-in-a-nextjs-14-application-with-authjs-5-mongodb-and-prisma-bbfcb38b3eea)
 - [Autenticação NextAuth com Google | Next.js 14+](https://www.youtube.com/watch?v=avSIzMivb6U)
+- [bwestwood11/verification-email-token-authjs - Github repo](https://github.com/bwestwood11/verification-email-token-authjs)

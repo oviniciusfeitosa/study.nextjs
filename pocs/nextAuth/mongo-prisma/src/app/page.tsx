@@ -14,15 +14,16 @@ const HomePage = async () => {
           ) : (
             <div className="flex w-full gap-4">
               <Link
+                href="/login"
                 // href="/sign-in"
-                href="/auth/signin"
+                // href="/auth/signin"
                 className="w-full rounded-sm bg-[hsl(191,52%,30%)] p-2 px-6 text-center hover:bg-[hsl(191,52%,35%)]"
               >
                 Sign In
               </Link>
               <Link
-                // href="/sign-in"
-                href="/auth/signup"
+                href="/register"
+                // href="/auth/signup"
                 className="w-full rounded-sm bg-[hsl(191,52%,30%)] p-2 px-6 text-center hover:bg-[hsl(191,52%,35%)]"
               >
                 Sign Up

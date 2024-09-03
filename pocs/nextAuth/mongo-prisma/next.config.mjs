@@ -8,6 +8,16 @@ const nextConfig = {
 	images: {
 		remotePatterns: [{ hostname: "lh3.googleusercontent.com" }],
 	},
+	// async redirects() {
+  //   return [
+  //     {
+  //       source: '/auth/login',
+  //       destination: '/login',
+  //       permanent: true,
+  //     },
+  //   ];
+  // },
+
 };
 
 export default nextConfig;

@@ -1,8 +1,8 @@
 import { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { signInSchema } from "./form-schemas";
-import db from "./db";
+import { LoginSchema } from "../schemas";
+import database from "./database";
 import { compare } from "bcryptjs";
 
 export const authConfig: NextAuthConfig = {
@@ -22,15 +22,13 @@ export const authConfig: NextAuthConfig = {
     Credentials({
       async authorize(credentials) {
         // Validate the fields
-        const validatedFields = signInSchema.safeParse(credentials);
+        const validatedFields = LoginSchema.safeParse(credentials);
         if (!validatedFields.success) {
           return null;
         }
-
         
-        // Validate that the user exists
         const { email, password } = validatedFields.data;
-        const user = await db.user.findUnique({
+        const user = await database.user.findUnique({
           where: { email },
         });
         
@@ -38,7 +36,6 @@ export const authConfig: NextAuthConfig = {
           return null;
         }
 
-        // Check the password
         const isPasswordMatch = await compare(password, user.password);
         if (!isPasswordMatch) {
           return null;

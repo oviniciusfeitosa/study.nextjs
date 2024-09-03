@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import { SubmitButton } from '@/components/SubmitButton';
-import { authSignOut } from '@/app/_actions/auth/authSignOut';
+import { authSignOut } from '@/actions/auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -12,7 +12,7 @@ const DashboardPage = async () => {
   return (
     <main className="flex flex-col items-center justify-center gap-4 pt-[10vh] text-white">
       <Link href="/" className="rounded-lg bg-[hsl(0,0%,7%)] p-2 px-8 hover:bg-[hsl(0,0%,10%)]">
-        {'<-'} Home
+        {'<'} Home
       </Link>
       <section className="flex flex-col items-center justify-center gap-4 rounded-sm bg-zinc-900 p-8">
         {session.user.image && (

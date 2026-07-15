@@ -1,15 +1,12 @@
-import NextAuth from 'next-auth';
-import { authConfig } from '@/lib/auth.config';
-import { PrismaAdapter } from '@auth/prisma-adapter';
 import {
   createUser,
   getUserByEmail,
-  getUserById,
-  getUserWithAccountsByEmail,
-  updateUserEmailVerifiedById,
+  getUserById
 } from '@/data/user';
+import { authConfig } from '@/lib/auth.config';
 import database from '@/lib/database';
-import { getAccountByUserEmail } from './data/account';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import NextAuth from 'next-auth';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
